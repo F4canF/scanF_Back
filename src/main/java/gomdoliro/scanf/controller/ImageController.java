@@ -35,21 +35,14 @@ public class ImageController {
         }
     }
 
-    // 특정 이메일로 저장된 모든 이미지 바이너리 반환
-    @GetMapping("/download/{email}")
-    public ResponseEntity<List<byte[]>> downloadImagesByEmail(@PathVariable String email) {
+    // 특정 이메일로 저장된 모든 이미지 조회
+    @GetMapping("/{email}")
+    public ResponseEntity<List<Image>> getImagesByEmail(@PathVariable String email) {
         List<Image> images = imageService.getImagesByEmail(email); // 이메일로 모든 이미지 조회
         if (images.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // 이미지가 없을 경우 404
         }
-
-        List<byte[]> imageBytes = images.stream()
-                .map(Image::getData)
-                .toList(); // 이미지 데이터를 리스트로 변환
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON) // JSON 형식으로 반환
-                .body(imageBytes); // 이미지 바이너리 데이터 리스트 반환
+        return ResponseEntity.ok(images); // 이미지 리스트 반환
     }
 
     // 로그인된 사용자의 이메일 가져오는 메서드

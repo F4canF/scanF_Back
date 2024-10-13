@@ -23,12 +23,11 @@ public class ImageController {
 
     // 로그인된 사용자의 이메일로 이미지 저장
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile file) {
+    public ResponseEntity<String> uploadImage(@RequestParam("name") String name, @RequestParam("image") MultipartFile file) {
         try {
-            String email = getCurrentUserEmail(); // 로그인된 사용자의 이메일 가져오기
             byte[] data = file.getBytes();
             String contentType = file.getContentType();
-            imageService.saveImage(email, contentType, data);
+            imageService.saveImage(name, contentType, data);
             return ResponseEntity.status(HttpStatus.CREATED).body("Image uploaded successfully.");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image.");
@@ -36,9 +35,9 @@ public class ImageController {
     }
 
     // 특정 이메일로 저장된 모든 이미지 조회
-    @GetMapping("/{email}")
-    public ResponseEntity<List<Image>> getImagesByEmail(@PathVariable String email) {
-        List<Image> images = imageService.getImagesByEmail(email); // 이메일로 모든 이미지 조회
+    @GetMapping("/{name}")
+    public ResponseEntity<List<Image>> getImagesByEmail(@PathVariable String name) {
+        List<Image> images = imageService.getImagesByName(name); // 이메일로 모든 이미지 조회
         if (images.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // 이미지가 없을 경우 404
         }

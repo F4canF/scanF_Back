@@ -108,6 +108,11 @@ public class JwtTokenProvider {
 
     //accessToken
     private Claims parseClaims(String accessToken) {
+        // JWT 유효성 검사
+        if (accessToken == null || accessToken.isEmpty()) {
+            throw new IllegalArgumentException("JWT cannot be null or empty");
+        }
+
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -115,7 +120,11 @@ public class JwtTokenProvider {
                     .parseClaimsJws(accessToken)
                     .getBody();
         } catch (ExpiredJwtException e) {
+            // 만료된 JWT의 경우 claims 반환
             return e.getClaims();
+        } catch (JwtException e) {
+            // JWT 파싱 중 다른 예외 발생 시 처리
+            throw new IllegalArgumentException("Invalid JWT token", e);
         }
     }
 

@@ -15,7 +15,7 @@ public class Image {
     private Long id;
 
     // 저장하는 사용자의 이메일
-    private String email;
+    private String name;
 
     // 이미지 타입 (예: jpg, png 등)
     private String contentType;
